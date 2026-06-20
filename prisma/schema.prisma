@@ -1,0 +1,49 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+enum AccessEventStatus {
+  SUCCESS
+  DENIED_NO_NFT
+  DENIED_LOCKED
+  DENIED_NO_KEY
+  FAILED
+}
+
+model UploadRecord {
+  id           String   @id @default(cuid())
+  createdAt    DateTime @default(now())
+  contentId    String?
+  ipfsCid      String
+  releaseAt    DateTime
+  adminWallet  String?
+  txHash       String?
+  chainName    String?
+
+  @@index([createdAt])
+  @@index([contentId])
+  @@index([adminWallet])
+}
+
+model AccessRecord {
+  id              String            @id @default(cuid())
+  createdAt       DateTime          @default(now())
+  contentId       String?
+  ipfsCid         String?
+  centreWallet    String?
+  keyHash         String?
+  status          AccessEventStatus
+  message         String?
+  downloadedFile  String?
+
+  @@index([createdAt])
+  @@index([contentId])
+  @@index([centreWallet])
+  @@index([keyHash])
+  @@index([status])
+}
